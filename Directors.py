@@ -5,7 +5,7 @@ df = pd.read_csv('imdb_top_1000.csv')
 
 df['Gross'] = df['Gross'].str.replace(',', '').astype(float)
 
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(2,2, figsize=(14, 10))
 fig.suptitle('IMDb Director Analysis')
 
 # Question 1 - Which director appears the most in the top 1000?
@@ -31,3 +31,6 @@ axes[0, 1].set_xlabel('Director')
 axes[0, 1].set_ylabel('Average rating')
 axes[0, 1].set_ylim(8, top_ratings.values.max() + 0.1)
 axes[0, 1].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
