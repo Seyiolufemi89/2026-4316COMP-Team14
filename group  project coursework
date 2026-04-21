@@ -1,0 +1,130 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv("imdb_top_1000.csv")
+
+actor_cols = ['Star1', 'Star2', 'Star3', 'Star4']
+
+# ============================================================
+# 1. Which actor appears most frequently in the dataset?
+# ============================================================
+
+all_actors = df[actor_cols].stack().reset_index(drop=True)
+actor_counts = all_actors.value_counts()
+
+print("Most frequent actor:", actor_counts.index[0], f"({actor_counts.iloc[0]} films)")
+
+# --- CHART 1 ---
+top10_actors = actor_counts.head(10)
+
+plt.figure(figsize=(12, 8))
+sns.barplot(
+    x=top10_actors.values,
+    y=top10_actors.index,
+    palette='viridis'
+)
+plt.title('Top 10 Most Frequent Actors in IMDb Top 1000', fontsize=16)
+plt.xlabel('Number of Films')
+plt.ylabel('Actor')
+plt.grid(axis='x', alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+
+
+# ============================================================
+# 2. Which actors are associated with higher rated movies?
+# ============================================================
+
+actor_rating_rows = []
+for _, row in df.iterrows():
+    for col in actor_cols:
+        actor_rating_rows.append([row[col], row['IMDB_Rating']])
+
+actor_ratings = pd.DataFrame(actor_rating_rows, columns=['Actor', 'Rating'])
+
+actor_stats = actor_ratings.groupby('Actor').agg(
+    avg_rating=('Rating', 'mean'),
+    num_films=('Rating', 'count')
+).reset_index()
+
+actors_min3 = actor_stats[actor_stats['num_films'] >= 3]
+top10_highest_rated = actors_min3.nlargest(10, 'avg_rating')
+
+print("Highest-rated actor (min 3 films):",
+      top10_highest_rated.iloc[0]['Actor'],
+      f"({round(top10_highest_rated.iloc[0]['avg_rating'], 2)})")
+
+# --- CHART 2 ---
+plt.figure(figsize=(12, 8))
+sns.barplot(
+    data=top10_highest_rated,
+    x='avg_rating',
+    y='Actor',
+    palette='viridis'
+)
+plt.title('Top 10 Actors by Average IMDB Rating (min. 3 films)', fontsize=16)
+plt.xlabel('Average Rating')
+plt.ylabel('Actor')
+plt.grid(axis='x', alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+
+
+# ============================================================
+# 3. Do movies with popular actors receive more votes?
+# ============================================================
+
+df['Actor_Popularity'] = df[actor_cols].apply(
+    lambda row: sum(actor_counts.get(actor, 0) for actor in row),
+    axis=1
+)
+
+correlation = df['Actor_Popularity'].corr(df['No_of_Votes'])
+
+print("Correlation between actor popularity and movie votes:",
+      round(correlation, 3))
+
+# --- CHART 3 ---
+plt.figure(figsize=(10, 6))
+sns.scatterplot(
+    data=df,
+    x='Actor_Popularity',
+    y='No_of_Votes',
+    alpha=0.6
+)
+plt.title('Actor Popularity vs Movie Votes', fontsize=16)
+plt.xlabel('Actor Popularity Score')
+plt.ylabel('Number of Votes')
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+
+
+# ============================================================
+# 4. What is the average rating for the top 5 actors?
+# ============================================================
+
+top5_actors = actor_counts.head(5).index.tolist()
+top5_avg_ratings = actor_ratings[actor_ratings['Actor'].isin(top5_actors)] \
+    .groupby('Actor')['Rating'].mean()
+
+print("\nAverage rating for top 5 most frequent actors:")
+print(top5_avg_ratings.round(2))
+
+# --- CHART 4 ---
+plt.figure(figsize=(10, 6))
+sns.barplot(
+    x=top5_avg_ratings.values,
+    y=top5_avg_ratings.index,
+    palette='viridis'
+)
+plt.title('Average IMDB Rating for Top 5 Most Frequent Actors', fontsize=16)
+plt.xlabel('Average Rating')
+plt.ylabel('Actor')
+plt.grid(axis='x', alpha=0.3)
+plt.tight_layout()
+plt.show()
