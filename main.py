@@ -1,27 +1,55 @@
-import matplotlib.pyplot as plt 
-import pandas as pd 
-#Importing Panda and Matplotlib to Read, organise and maipulate data
+import pandas as pd
+import matplotlib
 
-#read from the file 
-data = pd.read_csv('imdb_top_1000.csv')
+while True:
+    print ("1. Load dataset")
+    print ("2. Visualisations")
 
-#print all columns from the dataset 
-print("Dataset Information: ")
-print(data.info())
-#print the first 5 rows from the data set 
-print("\nFirst 5 rows of dataset:")
-print(data.head())
+    choice = input("\nEnter your choice 1-2: ")
 
-#creates the graph figure 
-fig, axes = plt.subplots (2, 2, figsize=(14, 10))
+    if choice == "1":
+        df = pd.read_csv('imdb_top_1000.csv')
+        print("Dataset loaded successfully!")
+    
+    elif choice == "2":
+        if 'df' not in locals():
+            print("\nPlease load the dataset first!\n")
+            continue
 
-#plot 4 : top 10 genres (Bar chart)
-# shows which genres appear most frequently in the top 1000
-genres = data['Genre'].value_counts().head(10)
-axes[1, 1].barh(genres.index, genres.values, color='purple', alpha=0.7)
-axes[1, 1].set_xlabel('Count')
-axes[1, 1].set_title('Top 10 movie Genres')
-axes[1, 1].grid(axis='x', alpha=0.3)
+        while True:
+            print("1. Thomas Ellerton" )
+            print("2. Ellie Harris")
+            print("3. Mackenzie Scrivener")
+            print("4. Oluwaseyi Olufemi")
+            print("5. Paddy Monaghan")
+            print("6. Kodi Dean")
+            print("7. Tom McAdam")
+            print("8. Back to main menu")
 
-plt.show()
+            choice = input("\nEnter your choice 1-8: ")
 
+            if choice == "1":
+                # Thomas Ellerton code
+                print("Code \n")
+            elif choice == "2":
+                # Ellie Harris code
+                print("Code \n")
+            elif choice == "3":
+                # Mackenzie Scrivener code
+                print("Code \n")
+            elif choice == "4":
+                # Oluwaseyi Olufemi code
+                print("Code \n")
+            elif choice == "5":
+                # Paddy Monaghan code
+                print("Code \n")
+            elif choice == "6":
+                # Kodi Dean code
+                print("Code \n")
+            elif choice == "7":
+                # Tom McAdam code
+                print("Code \n")
+            elif choice == "8":
+                break
+            else:
+                print("Invalid choice. Please enter a number between 1 and 8.\n")
