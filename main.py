@@ -158,6 +158,8 @@ while True:
 
             elif choice == "3":
                 # Mackenzie Scrivener code
+                df['Gross'] = df['Gross'].str.replace(',', '').astype(float)
+                
             while True:
                 print("\nWhich question would you like to analyse?")
                 print("1. Which director appears the most in the top 1000?")
