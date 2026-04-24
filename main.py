@@ -38,7 +38,7 @@ while True:
                     data = pd.read_csv('imdb_top_1000.csv')
                 except FileNotFoundError:
                     print("Error: imdb_top_1000.csv not found in this folder!")
-                    exit()
+                    continue
 
                 print("Dataset info: ")
                 print(data.info())
@@ -160,76 +160,76 @@ while True:
                 # Mackenzie Scrivener code
                 df['Gross'] = df['Gross'].str.replace(',', '').astype(float)
                 
-            while True:
-                print("\nWhich question would you like to analyse?")
-                print("1. Which director appears the most in the top 1000?")
-                print("2. Which director has the highest average rating (min 3 films)?")
-                print("3. Which director has the highest average revenue?")
-                print("4. Which directors get higher ratings in the top 1000?")
-                print("5. Quit")
-            
-                choice = input("\nEnter your choice (1-5): ")
-            
-                if choice == "5":
-                    print("Exiting...")
-                    break
-            
-                fig, ax = plt.subplots(figsize=(10, 6))
-            
-                if choice == "1":
-                    director_counts = df['Director'].value_counts()
-                    top_directors = director_counts.head(10)
-            
-                    ax.bar(top_directors.index, top_directors.values)
-                    ax.set_title('Directors with most films')
-                    ax.set_xlabel('Director')
-                    ax.set_ylabel('Number of films')
-                    ax.tick_params(axis='x', rotation=45)
-            
-                elif choice == "2":
-                    avg_ratings = df.groupby('Director')['IMDB_Rating'].mean()
-                    film_counts = df.groupby('Director')['IMDB_Rating'].count()
-                    directors_3plus = film_counts[film_counts >= 3].index
-                    avg_ratings_filtered = avg_ratings[directors_3plus]
-                    top_ratings = avg_ratings_filtered.sort_values(ascending=False).head(10)
-            
-                    ax.bar(top_ratings.index, top_ratings.values)
-                    ax.set_title('Highest average rating (min 3 films)')
-                    ax.set_xlabel('Director')
-                    ax.set_ylabel('Average rating')
-                    ax.set_ylim(8, top_ratings.values.max() + 0.1)
-                    ax.tick_params(axis='x', rotation=45)
-            
-                elif choice == "3":
-                    avg_revenue = df.groupby('Director')['Gross'].mean()
-                    top_revenue = avg_revenue.sort_values(ascending=False).head(10)
-            
-                    ax.bar(top_revenue.index, top_revenue / 1000000)
-                    ax.set_title('Highest average revenue')
-                    ax.set_xlabel('Director')
-                    ax.set_ylabel('Average gross (millions $)')
-                    ax.tick_params(axis='x', rotation=45)
-            
-                elif choice == "4":
-                    director_counts = df['Director'].value_counts()
-                    top5_directors = director_counts.head(5).index
-            
-                    for director in top5_directors:
-                        ratings = df[df['Director'] == director]['IMDB_Rating']
-                        ax.scatter([director] * len(ratings), ratings)
-            
-                    ax.set_title('Ratings per director')
-                    ax.set_xlabel('Director')
-                    ax.set_ylabel('IMDb Rating')
-                    ax.tick_params(axis='x', rotation=45)
-            
-                else:
-                    print("Invalid choice. Please enter a number between 1 and 5.")
-                    plt.close()
-                    continue
-            
-                plt.tight_layout()
-                plt.show()
+                while True:
+                    print("\nWhich question would you like to analyse?")
+                    print("1. Which director appears the most in the top 1000?")
+                    print("2. Which director has the highest average rating (min 3 films)?")
+                    print("3. Which director has the highest average revenue?")
+                    print("4. Which directors get higher ratings in the top 1000?")
+                    print("5. Quit")
+                
+                    choice = input("\nEnter your choice (1-5): ")
+                
+                    if choice == "5":
+                        print("Exiting...")
+                        break
+                
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                
+                    if choice == "1":
+                        director_counts = df['Director'].value_counts()
+                        top_directors = director_counts.head(10)
+                
+                        ax.bar(top_directors.index, top_directors.values)
+                        ax.set_title('Directors with most films')
+                        ax.set_xlabel('Director')
+                        ax.set_ylabel('Number of films')
+                        ax.tick_params(axis='x', rotation=45)
+                
+                    elif choice == "2":
+                        avg_ratings = df.groupby('Director')['IMDB_Rating'].mean()
+                        film_counts = df.groupby('Director')['IMDB_Rating'].count()
+                        directors_3plus = film_counts[film_counts >= 3].index
+                        avg_ratings_filtered = avg_ratings[directors_3plus]
+                        top_ratings = avg_ratings_filtered.sort_values(ascending=False).head(10)
+                
+                        ax.bar(top_ratings.index, top_ratings.values)
+                        ax.set_title('Highest average rating (min 3 films)')
+                        ax.set_xlabel('Director')
+                        ax.set_ylabel('Average rating')
+                        ax.set_ylim(8, top_ratings.values.max() + 0.1)
+                        ax.tick_params(axis='x', rotation=45)
+                
+                    elif choice == "3":
+                        avg_revenue = df.groupby('Director')['Gross'].mean()
+                        top_revenue = avg_revenue.sort_values(ascending=False).head(10)
+                
+                        ax.bar(top_revenue.index, top_revenue / 1000000)
+                        ax.set_title('Highest average revenue')
+                        ax.set_xlabel('Director')
+                        ax.set_ylabel('Average gross (millions $)')
+                        ax.tick_params(axis='x', rotation=45)
+                
+                    elif choice == "4":
+                        director_counts = df['Director'].value_counts()
+                        top5_directors = director_counts.head(5).index
+                
+                        for director in top5_directors:
+                            ratings = df[df['Director'] == director]['IMDB_Rating']
+                            ax.scatter([director] * len(ratings), ratings)
+                
+                        ax.set_title('Ratings per director')
+                        ax.set_xlabel('Director')
+                        ax.set_ylabel('IMDb Rating')
+                        ax.tick_params(axis='x', rotation=45)
+                
+                    else:
+                        print("Invalid choice. Please enter a number between 1 and 5.")
+                        plt.close()
+                        continue
+                
+                    plt.tight_layout()
+                    plt.show()
 
             elif choice == "4":
                 # Loads the dataset and reads the CSV file into a pandas
@@ -327,8 +327,72 @@ while True:
 
 
             elif choice == "5":
-                # Paddy Monaghan code
-
+                df = pd.read_csv("imdb_top_1000.csv")
+ 
+                # Clean up columns 
+                df["Released_Year"] = pd.to_numeric(df["Released_Year"], errors="coerce")
+ 
+                df["Runtime"] = df["Runtime"].str.replace(" min", "").str.strip()
+                df["Runtime"] = pd.to_numeric(df["Runtime"], errors="coerce")
+ 
+                # Remove commas and convert to numeric
+                df["Gross"] = df["Gross"].str.replace(",", "").str.strip()
+                df["Gross"] = pd.to_numeric(df["Gross"], errors="coerce")
+ 
+                # Drop rows where Released_Year is missing
+                df = df.dropna(subset=["Released_Year"])
+                df["Released_Year"] = df["Released_Year"].astype(int)
+ 
+                # Add a Decade column
+                df["Decade"] = (df["Released_Year"] // 10) * 10
+ 
+                # Create a grid of charts 
+                fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+                fig.suptitle("IMDb Top 1000 Movies – Data Analysis", fontsize=16, fontweight="bold")
+ 
+                # Movies released per year
+                movies_per_year = df.groupby("Released_Year").size()
+ 
+                axes[0, 0].bar(movies_per_year.index, movies_per_year.values, color="blue", edgecolor="white")
+                axes[0, 0].set_title("Movies Released Per Year")
+                axes[0, 0].set_xlabel("Year")
+                axes[0, 0].set_ylabel("Number of Movies")
+                axes[0, 0].tick_params(axis="x", rotation=45)
+ 
+                # Average IMDb rating over time 
+                avg_rating = df.groupby("Released_Year")["IMDB_Rating"].mean()
+ 
+                axes[0, 1].plot(avg_rating.index, avg_rating.values, color="blue", linewidth=2, marker="o", markersize=3)
+                axes[0, 1].set_title("Average IMDb Rating Over Time")
+                axes[0, 1].set_xlabel("Year")
+                axes[0, 1].set_ylabel("Average Rating")
+                axes[0, 1].set_ylim(6, 10)
+                axes[0, 1].tick_params(axis="x", rotation=45)
+ 
+                # Average runtime per decade 
+                avg_runtime = df.groupby("Decade")["Runtime"].mean().dropna()
+ 
+                axes[1, 0].bar(avg_runtime.index.astype(str), avg_runtime.values, color="blue", edgecolor="white", width=0.6)
+                axes[1, 0].set_title("Average Runtime Per Decade")
+                axes[1, 0].set_xlabel("Decade")
+                axes[1, 0].set_ylabel("Average Runtime (minutes)")
+                axes[1, 0].tick_params(axis="x", rotation=45)
+ 
+                # Average revenue (gross) per decade
+                avg_gross = df.groupby("Decade")["Gross"].mean().dropna()
+ 
+                # Convert to millions for readable labels
+                avg_gross_millions = avg_gross / 1_000_000
+ 
+                axes[1, 1].bar(avg_gross_millions.index.astype(str), avg_gross_millions.values, color="blue", edgecolor="white", width=0.6)
+                axes[1, 1].set_title("Average Box-Office Revenue Per Decade")
+                axes[1, 1].set_xlabel("Decade")
+                axes[1, 1].set_ylabel("Average Gross ($ millions)")
+                axes[1, 1].tick_params(axis="x", rotation=45)
+ 
+                # Final layout & save
+                plt.tight_layout()
+                plt.show()
 
             elif choice == "6":
                 # Kodi Dean code
@@ -397,7 +461,7 @@ while True:
 
             elif choice == "7":
                 # Tom McAdam code
-
+                pass
 
             elif choice == "8":
                 break
